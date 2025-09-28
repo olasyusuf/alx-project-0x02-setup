@@ -1,0 +1,2 @@
+# Next.js Project Setup and Basics.
+This project is a comprehensive introduction to building a modern web app with Next.js, TypeScript, and Tailwind CSS, covering everything from setup to API integration.
