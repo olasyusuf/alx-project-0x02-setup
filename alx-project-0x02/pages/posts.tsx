@@ -1,30 +1,14 @@
-import React, { useEffect, useState } from "react";
-import type { NextPage } from "next";
+import React from "react";
+import type { NextPage, GetStaticProps } from "next";
 import Header from "@/components/layout/Header";
 import PostCard from "@/components/common/PostCard";
 import { PostProps } from "@/interfaces";
 
-const Posts: NextPage = () => {
-  const [posts, setPosts] = useState<PostProps[]>([]);
+interface PostsPageProps {
+  posts: PostProps[];
+}
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
-      const data = await response.json();
-
-      // Map API response to PostProps structure
-      const formattedPosts: PostProps[] = data.map((post: any) => ({
-        title: post.title,
-        content: post.body,
-        userId: post.userId,
-      }));
-
-      setPosts(formattedPosts);
-    };
-
-    fetchPosts();
-  }, []);
-
+const Posts: NextPage<PostsPageProps> = ({ posts }) => {
   return (
     <div>
       <Header />
@@ -40,11 +24,26 @@ const Posts: NextPage = () => {
             />
           ))
         ) : (
-          <p>Loading posts...</p>
+          <p>No posts available.</p>
         )}
       </main>
     </div>
   );
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
+  const data = await response.json();
+
+  const posts: PostProps[] = data.map((post: any) => ({
+    title: post.title,
+    content: post.body,
+    userId: post.userId,
+  }));
+
+  return {
+    props: { posts },
+  };
 };
 
 export default Posts;
